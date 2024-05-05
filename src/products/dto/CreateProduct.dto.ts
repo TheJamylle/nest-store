@@ -10,6 +10,9 @@ import {
 } from 'class-validator';
 
 export class CreateProductDTO {
+  @IsNotEmpty()
+  userId: string;
+
   @IsNotEmpty({ message: 'Name cannot be empty' })
   name: string;
 
