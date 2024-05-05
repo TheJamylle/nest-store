@@ -20,4 +20,22 @@ export class UserRepository {
   async emailAlreadyRegistered(email: string) {
     return this.users.some((user) => user?.email == email);
   }
+
+  async update(id: string, newData: Partial<UserEntity>) {
+    const user = this.users.find((i) => i.id === id);
+
+    if (!user) {
+      throw new Error('User does not exists');
+    }
+
+    Object.entries(newData).forEach(([key, value]) => {
+      if (key === 'id') {
+        return;
+      }
+
+      user[key] = value;
+    });
+
+    return user;
+  }
 }
