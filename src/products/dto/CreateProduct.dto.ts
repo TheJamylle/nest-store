@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
-  ArrayNotEmpty,
   IsArray,
   IsNotEmpty,
   IsNumber,
@@ -28,15 +27,17 @@ export class CreateProductDTO {
   @IsNotEmpty()
   category: string;
 
-  @ArrayNotEmpty()
-  @ArrayMinSize(3)
-  @ValidateNested({ each: true, always: true })
+  @ValidateNested()
   @IsArray()
+  @ArrayMinSize(3)
   @Type(() => FeatureDTO)
   features: FeatureDTO[];
 }
 
 class FeatureDTO {
-  nome: string;
-  descricao: string;
+  @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
+  description: string;
 }
