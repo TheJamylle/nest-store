@@ -11,4 +11,8 @@ export class UserRepository {
   async getAll() {
     return this.users;
   }
+
+  async emailAlreadyRegistered(email: string) {
+    return this.users.some((user) => user?.email == email);
+  }
 }
