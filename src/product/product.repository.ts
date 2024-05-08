@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { ProductEntity } from './product.entity';
 
 @Injectable()
 export class ProductRepository {
-  private products = [];
+  private products: ProductEntity[] = [];
 
-  async save(product) {
+  async save(product: ProductEntity) {
     this.products.push(product);
   }
 
