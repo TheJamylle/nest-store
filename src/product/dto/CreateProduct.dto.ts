@@ -22,7 +22,7 @@ export class CreateProductDTO {
   price: number;
 
   @IsNumber()
-  quantity: number;
+  quantityAvailable: number;
 
   @IsNotEmpty()
   @Length(1, 1000)

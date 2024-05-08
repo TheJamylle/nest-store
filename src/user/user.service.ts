@@ -4,6 +4,7 @@ import { ListUsersDTO } from './dto/ListUsers.dto';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { UpdateUserDTO } from './dto/UpdateUser.dto';
+import { CreateUserDTO } from './dto/CreateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -12,7 +13,12 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(user: UserEntity) {
+  async create(user: CreateUserDTO) {
+    const userEntity = new UserEntity();
+    userEntity.name = user.name;
+    userEntity.email = user.email;
+    userEntity.password = user.password;
+
     return this.userRepository.save(user);
   }
 

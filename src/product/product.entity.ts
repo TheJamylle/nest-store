@@ -23,8 +23,8 @@ export class ProductEntity {
   @Column({ name: 'price', nullable: false })
   price: number;
 
-  @Column({ name: 'quantity', nullable: false })
-  quantity: number;
+  @Column({ name: 'quantity_available', nullable: false })
+  quantityAvailable: number;
 
   @Column({ name: 'description', nullable: false })
   description: string;
