@@ -3,10 +3,14 @@ import { ProductRepository } from './product.repository';
 import { CreateProductDTO } from './dto/CreateProduct.dto';
 import { ProductEntity } from './product.entity';
 import { v4 as uuid } from 'uuid';
+import { ProductService } from './product.service';
 
 @Controller('/products')
 export class ProductController {
-  constructor(private productRepository: ProductRepository) {}
+  constructor(
+    private productRepository: ProductRepository,
+    private productService: ProductService,
+  ) {}
 
   @Post()
   async create(@Body() product: CreateProductDTO) {
@@ -19,12 +23,12 @@ export class ProductController {
     productEntity.userId = product.userId;
     productEntity.id = uuid();
 
-    this.productRepository.save(productEntity);
+    this.productService.create(productEntity);
     return { id: productEntity.id, message: 'OK' };
   }
 
   @Get()
   async list() {
-    return this.productRepository.getAll();
+    return this.productService.listProducts();
   }
 }
