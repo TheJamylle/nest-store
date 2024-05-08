@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ProductFeatureEntity } from './product-feature.entity';
+import { ProductImageEntity } from './product-image.entity';
 
 @Entity({ name: 'products' })
 export class ProductEntity {
@@ -28,6 +31,20 @@ export class ProductEntity {
 
   @Column({ name: 'category', nullable: false })
   category: string;
+
+  @OneToMany(
+    () => ProductFeatureEntity,
+    (productFeatureEntity) => productFeatureEntity.product,
+    { cascade: true, eager: true },
+  )
+  features: ProductFeatureEntity[];
+
+  @OneToMany(
+    () => ProductImageEntity,
+    (productImageEntity) => productImageEntity.product,
+    { cascade: true, eager: true },
+  )
+  images: ProductImageEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

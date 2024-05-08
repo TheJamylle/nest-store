@@ -8,6 +8,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
+import { ProductEntity } from '../product.entity';
 
 export class CreateProductDTO {
   @IsNotEmpty()
@@ -35,12 +36,34 @@ export class CreateProductDTO {
   @ArrayMinSize(3)
   @Type(() => FeatureDTO)
   features: FeatureDTO[];
+
+  @ValidateNested()
+  @IsArray()
+  @ArrayMinSize(1)
+  @Type(() => ImageDTO)
+  images: ImageDTO[];
 }
 
 class FeatureDTO {
+  id: string;
+
   @IsNotEmpty()
-  name: string;
+  title: string;
 
   @IsNotEmpty()
   description: string;
+
+  product: ProductEntity;
+}
+
+class ImageDTO {
+  id: string;
+
+  @IsNotEmpty()
+  url: string;
+
+  @IsNotEmpty()
+  description: string;
+
+  product: ProductEntity;
 }

@@ -15,13 +15,15 @@ export class ProductController {
   @Post()
   async create(@Body() product: CreateProductDTO) {
     const productEntity = new ProductEntity();
+    productEntity.id = uuid();
     productEntity.name = product.name;
     productEntity.price = product.price;
     productEntity.quantity = product.quantity;
     productEntity.category = product.category;
     productEntity.description = product.description;
     productEntity.userId = product.userId;
-    productEntity.id = uuid();
+    productEntity.features = product.features;
+    productEntity.images = product.images;
 
     this.productService.create(productEntity);
     return { id: productEntity.id, message: 'OK' };
