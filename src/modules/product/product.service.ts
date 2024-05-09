@@ -30,4 +30,8 @@ export class ProductService {
       (product) => new ListProductsDTO(product.id, product.name, product.price),
     );
   }
+
+  async getById(id: string) {
+    return this.productRepository.findOneBy({ id });
+  }
 }

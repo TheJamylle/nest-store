@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { OrderModule } from './modules/order/order.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './resources/filters/global-exception-filter';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { GlobalExceptionFilter } from './resources/filters/global-exception-filt
       inject: [PostgresConfigService],
     }),
     OrderModule,
+    CacheModule.register({ isGlobal: true, ttl: 10000 }),
   ],
   providers: [
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },
