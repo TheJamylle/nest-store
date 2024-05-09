@@ -1,5 +1,9 @@
 import { CacheModule } from '@nestjs/cache-manager';
-import { ClassSerializerInterceptor, Module } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  ConsoleLogger,
+  Module,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,6 +14,7 @@ import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
 import { GlobalExceptionFilter } from './resources/filters/global-exception-filter';
 import { AuthModule } from './modules/auth/auth.module';
+import { GlobalLoggerInterceptor } from './resources/interceptors/global-logger/global-logger.interceptor';
 
 @Module({
   imports: [
@@ -34,6 +39,8 @@ import { AuthModule } from './modules/auth/auth.module';
   providers: [
     { provide: APP_FILTER, useClass: GlobalExceptionFilter },
     { provide: APP_INTERCEPTOR, useClass: ClassSerializerInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: GlobalLoggerInterceptor },
+    ConsoleLogger,
   ],
 })
 export class AppModule {}
