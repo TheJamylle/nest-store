@@ -31,7 +31,7 @@ export class ProductService {
     );
   }
 
-  async getById(id: string) {
+  async getById(id: string): Promise<any> {
     return this.productRepository.findOneBy({ id });
   }
 }
