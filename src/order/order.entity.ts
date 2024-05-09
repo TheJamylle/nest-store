@@ -5,9 +5,11 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { OrderStatus } from './enum/orderstatus.enum';
 import { UserEntity } from '../user/user.entity';
+import { OrderItemEntity } from './order-item.entity';
 
 @Entity({ name: 'orders' })
 export class OrderEntity {
@@ -22,6 +24,9 @@ export class OrderEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.orders)
   user: UserEntity;
+
+  @OneToMany(() => OrderItemEntity, (item) => item.order, { cascade: true })
+  items: OrderItemEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
