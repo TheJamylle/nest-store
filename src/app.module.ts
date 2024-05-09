@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostgresConfigService } from './config/postgres.config.service';
 import { ConfigModule } from '@nestjs/config';
 import { OrderModule } from './order/order.module';
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalExceptionFilter } from './filters/global-exception-filter';
 
 @Module({
   imports: [
@@ -21,6 +23,10 @@ import { OrderModule } from './order/order.module';
     }),
     OrderModule,
   ],
-  providers: [UserRepository, UserExistsValidator],
+  providers: [
+    { provide: APP_FILTER, useClass: GlobalExceptionFilter },
+    UserRepository,
+    UserExistsValidator,
+  ],
 })
 export class AppModule {}
