@@ -11,4 +11,7 @@ export class CreateUserDTO {
 
   @MinLength(6, { message: 'Password must have at least 6 length' })
   password: string;
+
+  @IsNotEmpty()
+  address: string;
 }

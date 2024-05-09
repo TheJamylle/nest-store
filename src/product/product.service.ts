@@ -19,7 +19,6 @@ export class ProductService {
     productEntity.quantityAvailable = product.quantityAvailable;
     productEntity.category = product.category;
     productEntity.description = product.description;
-    productEntity.userId = product.userId;
     productEntity.features = product.features;
     productEntity.images = product.images;
 

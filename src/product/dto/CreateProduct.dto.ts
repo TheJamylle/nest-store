@@ -11,9 +11,6 @@ import {
 import { ProductEntity } from '../product.entity';
 
 export class CreateProductDTO {
-  @IsNotEmpty()
-  userId: string;
-
   @IsNotEmpty({ message: 'Name cannot be empty' })
   name: string;
 

@@ -18,6 +18,7 @@ export class UserService {
     userEntity.name = user.name;
     userEntity.email = user.email;
     userEntity.password = user.password;
+    userEntity.address = user.address;
 
     return this.userRepository.save(user);
   }

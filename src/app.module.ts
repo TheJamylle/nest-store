@@ -6,6 +6,7 @@ import { UserExistsValidator } from './validation/user-exists.validator';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostgresConfigService } from './config/postgres.config.service';
 import { ConfigModule } from '@nestjs/config';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ConfigModule } from '@nestjs/config';
       useClass: PostgresConfigService,
       inject: [PostgresConfigService],
     }),
+    OrderModule,
   ],
   providers: [UserRepository, UserExistsValidator],
 })
