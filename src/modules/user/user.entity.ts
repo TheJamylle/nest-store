@@ -1,3 +1,4 @@
+import { Exclude, Expose } from 'class-transformer';
 import { OrderEntity } from '../order/order.entity';
 import {
   Entity,
@@ -8,11 +9,13 @@ import {
   OneToMany,
 } from 'typeorm';
 
+@Exclude()
 @Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Expose()
   @Column({ name: 'name', length: 100, nullable: false })
   name: string;
 
