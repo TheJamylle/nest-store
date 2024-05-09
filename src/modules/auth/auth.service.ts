@@ -1,18 +1,36 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UserService } from '../user/user.service';
+
+interface PayloadUser {
+  sub: string;
+  name: string;
+}
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
   async login(email: string, password: string) {
     const user = await this.userService.emailAlreadyRegistered(email);
 
-    if (!user) {
+    const userValidation = await bcrypt.compare(password, user?.password || '');
+
+    if (!user || !userValidation) {
       throw new UnauthorizedException('Email or password invalid');
     }
 
-    return bcrypt.compare(password, user.password);
+    const payload: PayloadUser = {
+      sub: user.id,
+      name: user.name,
+    };
+
+    return {
+      token: await this.jwtService.signAsync(payload),
+    };
   }
 }
