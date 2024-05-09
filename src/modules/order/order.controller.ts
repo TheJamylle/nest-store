@@ -6,16 +6,19 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateOrderDTO } from './dto/CreateOrder.dto';
 import { UpdateOrderDTO } from './dto/UpdateOrder.dto';
 import { OrderService } from './order.service';
+import { AuthGuard } from '../auth/auth/auth.guard';
 
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   create(@Body() orderRequest: CreateOrderDTO) {
     return this.orderService.create(orderRequest);
   }
