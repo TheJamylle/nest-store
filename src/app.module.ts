@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from './user/user.module';
-import { ProductModule } from './product/product.module';
-import { UserRepository } from './user/user.repository';
+import { UserModule } from './modules/user/user.module';
+import { ProductModule } from './modules/product/product.module';
+import { UserRepository } from './modules/user/user.repository';
 import { UserExistsValidator } from './validation/user-exists.validator';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostgresConfigService } from './config/postgres.config.service';
 import { ConfigModule } from '@nestjs/config';
-import { OrderModule } from './order/order.module';
+import { OrderModule } from './modules/order/order.module';
 import { APP_FILTER } from '@nestjs/core';
-import { GlobalExceptionFilter } from './filters/global-exception-filter';
+import { GlobalExceptionFilter } from './resources/filters/global-exception-filter';
 
 @Module({
   imports: [
