@@ -8,6 +8,9 @@ import {
 } from 'class-validator';
 
 class OrderItemDTO {
+  @IsUUID()
+  productId: string;
+
   @IsInt()
   quantity: number;
 }

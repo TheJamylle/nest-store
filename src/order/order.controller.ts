@@ -1,6 +1,15 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDTO } from './dto/CreateOrder.dto';
+import { UpdateOrderDTO } from './dto/UpdateOrder.dto';
 
 @Controller('orders')
 export class OrderController {
@@ -9,6 +18,14 @@ export class OrderController {
   @Post()
   create(@Body() orderRequest: CreateOrderDTO) {
     return this.orderService.create(orderRequest);
+  }
+
+  @Patch(':id')
+  updateStatus(
+    @Param('id') orderId: string,
+    @Body() updateRequest: UpdateOrderDTO,
+  ) {
+    return this.orderService.updateStatus(orderId, updateRequest);
   }
 
   @Get()

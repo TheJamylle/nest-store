@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { OrderEntity } from './order.entity';
 import { OrderStatus } from './enum/orderstatus.enum';
 import { CreateOrderDTO } from './dto/CreateOrder.dto';
 import { OrderItemEntity } from './order-item.entity';
+import { ProductEntity } from '../product/product.entity';
+import { UpdateOrderDTO } from './dto/UpdateOrder.dto';
 
 @Injectable()
 export class OrderService {
@@ -14,20 +16,34 @@ export class OrderService {
     private readonly orderRepository: Repository<OrderEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(ProductEntity)
+    private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
   async create(orderData: CreateOrderDTO) {
     const user = await this.userRepository.findOneBy({ id: orderData.userId });
+
+    const productIds = orderData.items.map((item) => item.productId);
+
+    const products = await this.productRepository.findBy({
+      id: In(productIds),
+    });
 
     const orderEntity = new OrderEntity();
     orderEntity.status = OrderStatus.PROCESSING;
     orderEntity.user = user;
 
     const itemsEntities = orderData.items.map((item) => {
-      const itemEntity = new OrderItemEntity();
+      const currentProduct = products.find(
+        (product) => product.id === item.productId,
+      );
 
-      itemEntity.price = 10;
+      const itemEntity = new OrderItemEntity();
+      itemEntity.price = currentProduct.price;
       itemEntity.quantity = item.quantity;
+      itemEntity.product = currentProduct;
+      itemEntity.product.quantityAvailable -= item.quantity;
+
       return itemEntity;
     });
 
@@ -49,5 +65,13 @@ export class OrderService {
     const orders = await this.orderRepository.findBy({ user: { id: userId } });
 
     return orders;
+  }
+
+  async updateStatus(id: string, updateData: UpdateOrderDTO) {
+    const order = await this.orderRepository.findOneBy({ id });
+
+    Object.assign(order, updateData);
+
+    return this.orderRepository.update(id, order);
   }
 }
