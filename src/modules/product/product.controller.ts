@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
@@ -7,16 +8,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateProductDTO } from './dto/CreateProduct.dto';
-import { ProductRepository } from './product.repository';
 import { ProductService } from './product.service';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('/products')
 export class ProductController {
-  constructor(
-    private productRepository: ProductRepository,
-    private productService: ProductService,
-  ) {}
+  constructor(private productService: ProductService) {}
 
   @Post()
   async create(@Body() product: CreateProductDTO) {
@@ -25,6 +21,7 @@ export class ProductController {
   }
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
   async getAll() {
     return this.productService.listProducts();
   }

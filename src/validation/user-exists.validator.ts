@@ -4,17 +4,16 @@ import {
   ValidatorConstraintInterface,
   registerDecorator,
 } from 'class-validator';
-import { UserRepository } from '../modules/user/user.repository';
 import { Injectable } from '@nestjs/common';
+import { UserService } from 'src/modules/user/user.service';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class UserExistsValidator implements ValidatorConstraintInterface {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userService: UserService) {}
 
   async validate(value: any): Promise<boolean> {
-    const user = await this.userRepository.getById(value);
-    console.log({ user });
+    const user = await this.userService.getById(value);
     return user != undefined;
   }
 }

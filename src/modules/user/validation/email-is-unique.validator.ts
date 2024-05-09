@@ -4,16 +4,16 @@ import {
   ValidatorConstraintInterface,
   registerDecorator,
 } from 'class-validator';
-import { UserRepository } from '../user.repository';
 import { Injectable } from '@nestjs/common';
+import { UserService } from '../user.service';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class EmailIsUniqueValidator implements ValidatorConstraintInterface {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userService: UserService) {}
 
   async validate(value: any): Promise<boolean> {
-    const userExists = await this.userRepository.emailAlreadyRegistered(value);
+    const userExists = await this.userService.emailAlreadyRegistered(value);
 
     return !userExists;
   }

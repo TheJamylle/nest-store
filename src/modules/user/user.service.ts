@@ -30,6 +30,14 @@ export class UserService {
     return usersList;
   }
 
+  async getById(id: string) {
+    return this.userRepository.findOneBy({ id });
+  }
+
+  async emailAlreadyRegistered(email: string) {
+    return this.userRepository.findOneBy({ email });
+  }
+
   async update(id: string, user: UpdateUserDTO) {
     this.userRepository.update(id, user);
   }
