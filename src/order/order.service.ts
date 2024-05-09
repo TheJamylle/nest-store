@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
@@ -30,6 +34,27 @@ export class OrderService {
     return user;
   }
 
+  private async treatOrderData(
+    orderData: CreateOrderDTO,
+    products: ProductEntity[],
+  ) {
+    orderData.items.forEach((item) => {
+      const currentProduct = products.find(
+        (product) => product.id === item.productId,
+      );
+
+      if (!currentProduct) {
+        throw new NotFoundException(`Product id ${item.productId} not found`);
+      }
+
+      if (item.quantity > currentProduct.quantityAvailable) {
+        throw new BadRequestException(
+          `Quantity requested ${item.quantity} is greater than available (${currentProduct.quantityAvailable}) for ${currentProduct.name} product`,
+        );
+      }
+    });
+  }
+
   async create(orderData: CreateOrderDTO) {
     const user = await this.getUser(orderData.userId);
 
@@ -43,19 +68,17 @@ export class OrderService {
     orderEntity.status = OrderStatus.PROCESSING;
     orderEntity.user = user;
 
+    this.treatOrderData(orderData, products);
+
     const itemsEntities = orderData.items.map((item) => {
       const currentProduct = products.find(
         (product) => product.id === item.productId,
       );
 
-      if (!currentProduct) {
-        throw new NotFoundException(`Product id ${item.productId} not found`);
-      }
-
       const itemEntity = new OrderItemEntity();
-      itemEntity.price = currentProduct.price;
+      itemEntity.price = currentProduct!.price;
       itemEntity.quantity = item.quantity;
-      itemEntity.product = currentProduct;
+      itemEntity.product = currentProduct!;
       itemEntity.product.quantityAvailable -= item.quantity;
 
       return itemEntity;
