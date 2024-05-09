@@ -10,14 +10,26 @@ import {
 import { CreateUserDTO } from './dto/CreateUser.dto';
 import { UpdateUserDTO } from './dto/UpdateUser.dto';
 import { UserService } from './user.service';
+import { PasswordHashingPipe } from 'src/resources/pipes/password-hashing.pipe';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('/users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private configService: ConfigService,
+  ) {}
 
   @Post()
-  async create(@Body() data: CreateUserDTO) {
-    const result = await this.userService.create(data);
+  async create(@Body() { password, ...data }: CreateUserDTO) {
+    const hashedPassword = await new PasswordHashingPipe(
+      this.configService,
+    ).transform(password);
+
+    const result = await this.userService.create({
+      ...data,
+      password: hashedPassword,
+    });
     return { user: result, message: 'OK' };
   }
 

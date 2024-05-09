@@ -9,6 +9,7 @@ import { OrderModule } from './modules/order/order.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
 import { GlobalExceptionFilter } from './resources/filters/global-exception-filter';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { GlobalExceptionFilter } from './resources/filters/global-exception-filt
       }),
       isGlobal: true,
     }),
+    AuthModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: GlobalExceptionFilter }],
 })
