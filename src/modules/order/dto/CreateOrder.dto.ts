@@ -16,9 +16,6 @@ class OrderItemDTO {
 }
 
 export class CreateOrderDTO {
-  @IsUUID()
-  userId: string;
-
   @ValidateNested()
   @IsArray()
   @ArrayMinSize(1)

@@ -55,8 +55,8 @@ export class OrderService {
     });
   }
 
-  async create(orderData: CreateOrderDTO) {
-    const user = await this.getUser(orderData.userId);
+  async create(userId: string, orderData: CreateOrderDTO) {
+    const user = await this.getUser(userId);
 
     const productIds = orderData.items.map((item) => item.productId);
 
@@ -104,10 +104,13 @@ export class OrderService {
     return orders;
   }
 
-  async updateStatus(id: string, updateData: UpdateOrderDTO) {
-    const order = await this.orderRepository.findOneBy({ id });
+  async updateStatus(id: string, userId: string, updateData: UpdateOrderDTO) {
+    const order = await this.orderRepository.findOne({
+      where: { id },
+      relations: { user: true },
+    });
 
-    if (!order) {
+    if (!order || order.user.id != userId) {
       throw new NotFoundException('Order not found');
     }
 
