@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
@@ -20,8 +20,18 @@ export class OrderService {
     private readonly productRepository: Repository<ProductEntity>,
   ) {}
 
+  private async getUser(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
   async create(orderData: CreateOrderDTO) {
-    const user = await this.userRepository.findOneBy({ id: orderData.userId });
+    const user = await this.getUser(orderData.userId);
 
     const productIds = orderData.items.map((item) => item.productId);
 
@@ -37,6 +47,10 @@ export class OrderService {
       const currentProduct = products.find(
         (product) => product.id === item.productId,
       );
+
+      if (!currentProduct) {
+        throw new NotFoundException(`Product id ${item.productId} not found`);
+      }
 
       const itemEntity = new OrderItemEntity();
       itemEntity.price = currentProduct.price;
@@ -69,6 +83,10 @@ export class OrderService {
 
   async updateStatus(id: string, updateData: UpdateOrderDTO) {
     const order = await this.orderRepository.findOneBy({ id });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
 
     Object.assign(order, updateData);
 
